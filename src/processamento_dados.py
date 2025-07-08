@@ -72,18 +72,21 @@ def extract_employee_data(text):
 
 def salvar_arquivo(df, output_destination):
     """Salva o DataFrame em um arquivo Excel no caminho especificado ou em um buffer de memória."""
-    df['VALOR DA RUBRICA'] = df['VALOR DA RUBRICA'].str.replace('.', '', regex=False)
-    df['VALOR DA RUBRICA'] = df['VALOR DA RUBRICA'].str.replace(',', '.', regex=False)
-    df['VALOR DA RUBRICA'] = pd.to_numeric(df['VALOR DA RUBRICA'], errors='coerce')
+    # Cria uma cópia do DataFrame para evitar modificar o original
+    df_copy = df.copy()
+    df_copy['VALOR DA RUBRICA'] = df_copy['VALOR DA RUBRICA'].str.replace('.', '', regex=False)
+    df_copy['VALOR DA RUBRICA'] = df_copy['VALOR DA RUBRICA'].str.replace(',', '.', regex=False)
+    df_copy['VALOR DA RUBRICA'] = pd.to_numeric(df_copy['VALOR DA RUBRICA'], errors='coerce')
 
     try:
         if isinstance(output_destination, str):
             # Se for um caminho de arquivo, salva no disco
-            df.to_excel(output_destination, index=False)
+            df_copy.to_excel(output_destination, index=False)
             print(f"Arquivo Excel salvo com sucesso em: {output_destination}")
         else:
             # Se for um objeto BytesIO, salva no buffer
-            df.to_excel(output_destination, index=False)
+            with pd.ExcelWriter(output_destination, engine='xlsxwriter') as writer:
+                df_copy.to_excel(writer, index=False, sheet_name='Dados Funcionarios')
             print("DataFrame salvo em buffer de memória.")
     except Exception as e:
         print(f"Erro ao salvar o arquivo: {e}")

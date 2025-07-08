@@ -11,9 +11,9 @@ import pdfplumber
 import re
 
 
-from extracao_pdf import gerar_txt_de_pdf
-from processamento_dados import extract_employee_data, salvar_arquivo, ler_arquivo
-from utils import criar_diretorio
+from src.extracao_pdf import gerar_txt_de_pdf
+from src.processamento_dados import extract_employee_data, salvar_arquivo, ler_arquivo
+from src.utils import criar_diretorio
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
@@ -241,12 +241,12 @@ def render_conversao_folha():
 
                     # Cria DataFrame e arquivo Excel
                     df = pd.DataFrame(employee_data)
-                    # Salva o DataFrame em um buffer de memória
+                    
+                    # Cria buffer de memória para o Excel
                     excel_buffer = io.BytesIO()
                     salvar_arquivo(df, excel_buffer)
-                    excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer
-
-                    # Prepara download
+                    
+                    # Captura os bytes do Excel em uma variável
                     excel_bytes = excel_buffer.getvalue()
 
                     st.success("✅ Dados extraídos com sucesso!")
@@ -255,11 +255,10 @@ def render_conversao_folha():
                     with st.expander("👁️ Visualizar dados extraídos", expanded=False):
                         st.dataframe(df, use_container_width=True)
                     
-                    # Botão de download
-                    excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer novamente
+                    # Botão de download usando os bytes capturados
                     st.download_button(
                         label="📥 Baixar Relatório em Excel",
-                        data=excel_buffer,
+                        data=excel_bytes,
                         file_name="dados_funcionarios.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
