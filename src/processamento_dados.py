@@ -70,14 +70,20 @@ def extract_employee_data(text):
 
     return data
 
-def salvar_arquivo(df, file_path):
-    """Salva o DataFrame em um arquivo Excel no caminho especificado."""
+def salvar_arquivo(df, output_destination):
+    """Salva o DataFrame em um arquivo Excel no caminho especificado ou em um buffer de memória."""
     df['VALOR DA RUBRICA'] = df['VALOR DA RUBRICA'].str.replace('.', '', regex=False)
     df['VALOR DA RUBRICA'] = df['VALOR DA RUBRICA'].str.replace(',', '.', regex=False)
     df['VALOR DA RUBRICA'] = pd.to_numeric(df['VALOR DA RUBRICA'], errors='coerce')
 
     try:
-        df.to_excel(file_path, index=False)
-        print(f"Arquivo Excel salvo com sucesso em: {file_path}")
+        if isinstance(output_destination, str):
+            # Se for um caminho de arquivo, salva no disco
+            df.to_excel(output_destination, index=False)
+            print(f"Arquivo Excel salvo com sucesso em: {output_destination}")
+        else:
+            # Se for um objeto BytesIO, salva no buffer
+            df.to_excel(output_destination, index=False)
+            print("DataFrame salvo em buffer de memória.")
     except Exception as e:
         print(f"Erro ao salvar o arquivo: {e}")

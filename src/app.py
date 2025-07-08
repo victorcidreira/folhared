@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import tempfile
 import traceback
+import io
 from streamlit_option_menu import option_menu
 
 # Importa as funções dos outros módulos do seu projeto
@@ -235,12 +236,13 @@ def render_conversao_folha():
 
                     # Cria DataFrame e arquivo Excel
                     df = pd.DataFrame(employee_data)
-                    excel_path = os.path.join(temp_dir, "dados_funcionarios.xlsx")
-                    salvar_arquivo(df, excel_path)
+                    # Salva o DataFrame em um buffer de memória
+                    excel_buffer = io.BytesIO()
+                    salvar_arquivo(df, excel_buffer)
+                    excel_buffer.seek(0)
 
                     # Prepara download
-                    with open(excel_path, "rb") as file:
-                        excel_bytes = file.read()
+                    excel_bytes = excel_buffer.getvalue()
 
                     st.success("✅ Dados extraídos com sucesso!")
                     
