@@ -251,10 +251,11 @@ def render_conversao_folha():
                         st.dataframe(df, use_container_width=True)
                     
                     # Botão de download
+                    excel_buffer.seek(0) # Reposiciona o cursor para o início do buffer
                     st.download_button(
-                        label="📥 Baixar Relatório em Excel",
-                        data=excel_bytes,
-                        file_name="dados_funcionarios.xlsx",
+                        label="Baixar Relatório Excel",
+                        data=excel_buffer,
+                        file_name="relatorio_folha_de_pagamento.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
 
