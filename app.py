@@ -7,8 +7,13 @@ import io
 from streamlit_option_menu import option_menu
 
 # Importa as funções dos outros módulos do seu projeto
+import pdfplumber
+import re
+
+
 from extracao_pdf import gerar_txt_de_pdf
 from processamento_dados import extract_employee_data, salvar_arquivo, ler_arquivo
+from utils import criar_diretorio
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(

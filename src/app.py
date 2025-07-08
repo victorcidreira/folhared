@@ -9,6 +9,7 @@ from streamlit_option_menu import option_menu
 # Importa as funções dos outros módulos do seu projeto
 from extracao_pdf import gerar_txt_de_pdf
 from processamento_dados import extract_employee_data, salvar_arquivo, ler_arquivo
+from utils import criar_diretorio
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(
@@ -239,10 +240,7 @@ def render_conversao_folha():
                     # Salva o DataFrame em um buffer de memória
                     excel_buffer = io.BytesIO()
                     salvar_arquivo(df, excel_buffer)
-                    excel_buffer.seek(0)
-
-                    # Prepara download
-                    excel_bytes = excel_buffer.getvalue()
+                    excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer
 
                     st.success("✅ Dados extraídos com sucesso!")
                     
@@ -251,11 +249,11 @@ def render_conversao_folha():
                         st.dataframe(df, use_container_width=True)
                     
                     # Botão de download
-                    excel_buffer.seek(0) # Reposiciona o cursor para o início do buffer
+                    excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer novamente
                     st.download_button(
-                        label="Baixar Relatório Excel",
+                        label="📥 Baixar Relatório em Excel",
                         data=excel_buffer,
-                        file_name="relatorio_folha_de_pagamento.xlsx",
+                        file_name="dados_funcionarios.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
 
