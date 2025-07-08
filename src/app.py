@@ -241,7 +241,6 @@ def render_conversao_folha():
                     excel_buffer = io.BytesIO()
                     salvar_arquivo(df, excel_buffer)
                     excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer
-
                     st.success("✅ Dados extraídos com sucesso!")
                     
                     # Mostra preview dos dados
