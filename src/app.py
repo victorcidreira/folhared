@@ -246,15 +246,30 @@ def render_conversao_folha():
                     # Mostra preview dos dados
                     with st.expander("👁️ Visualizar dados extraídos", expanded=False):
                         st.dataframe(df, use_container_width=True)
-                    
-                    # Botão de download
-                    excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer novamente
-                    st.download_button(
-                        label="📥 Baixar Relatório em Excel",
-                        data=excel_buffer,
-                        file_name="dados_funcionarios.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+                    # Opção de download
+                    download_option = st.radio(
+                        "Como você gostaria de baixar o arquivo?",
+                        ("Download Direto", "Salvar no Disco"),
+                        index=0
                     )
+
+                    if download_option == "Download Direto":
+                        # Botão de download direto
+                        excel_buffer.seek(0)  # Reposiciona o cursor para o início do buffer novamente
+                        st.download_button(
+                            label="📥 Baixar Relatório em Excel",
+                            data=excel_buffer,
+                            file_name="dados_funcionarios.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+                    else:
+                        # Salvar no disco (exemplo: na pasta 'dados/temp')
+                        output_dir = os.path.join(os.getcwd(), "dados", "temp")
+                        criar_diretorio(output_dir)
+                        output_file_path = os.path.join(output_dir, "dados_funcionarios.xlsx")
+                        salvar_arquivo(df, output_file_path)
+                        st.success(f"Arquivo salvo em: {output_file_path}")
 
                 except Exception as e:
                     st.error("❌ Ocorreu um erro inesperado durante o processamento:")
